@@ -6,12 +6,13 @@ const  colorMap = require("colormap");
 
 const settings = {
   dimensions: [ 1080, 1080 ], 
-  animate: true
+  animate: true,
+  fps: 30
 };
 
 const sketch = ({width, height}) => {
   const cols = 72;
-  const rows = 15;
+  const rows = 25;
   const numOfCells = cols * rows;
 
   // grid
@@ -47,17 +48,17 @@ const sketch = ({width, height}) => {
     y = (Math.floor( i/cols ) * cellHeight);
 
     n = random.noise2D(x,y, frequency, amplitude);
-    x += n;
-    y += n;
+    // x += n;
+    // y += n;
 
-    curveWidth = math.mapRange(n,-amplitude, amplitude, 0 , 5);
+    curveWidth = math.mapRange(n,-amplitude, amplitude, 0 , 10);
     color = lineColors[Math.floor(math.mapRange(n, -amplitude, amplitude, 0 , amplitude))]; 
     pointColor = pointColors[Math.floor(math.mapRange(n, -amplitude, amplitude, 0, amplitude))]
     
     points.push(new Point({ x , y , curveWidth, color , pointColor}));
   }
   
-  return ({ context, width, height}) => {
+  return ({ context, width, height,frame}) => {
     context.fillStyle = 'black';
     context.fillRect(0, 0, width, height);
 
@@ -66,6 +67,12 @@ const sketch = ({width, height}) => {
     context.translate(marginX,marginY);
     context.translate(cellWidth * 0.5, cellHeight * 0.5);
     context.strokeStyle = 'white';
+
+    points.forEach(point => {
+      n = random.noise2D(point.ix + frame * 3,point.iy, frequency, amplitude);
+      point.x = point.ix + n;
+      point.y = point.iy + n;
+    });
 
     let lastX, lastY;
 
@@ -122,6 +129,9 @@ class Point {
     this.curveWidth = curveWidth;
     this.color = color;
     this.pointColor = pointColor;
+
+    this.ix = x;
+    this.iy = y;
 
   }
   draw(context){
