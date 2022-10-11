@@ -51,10 +51,9 @@ const sketch = ({width, height}) => {
     // x += n;
     // y += n;
 
-    curveWidth = math.mapRange(n,-amplitude, amplitude, 0 , 10);
+    curveWidth = math.mapRange(n,-amplitude, amplitude, 5 ,10);
     color = lineColors[Math.floor(math.mapRange(n, -amplitude, amplitude, 0 , amplitude))]; 
     pointColor = pointColors[Math.floor(math.mapRange(n, -amplitude, amplitude, 0, amplitude))]
-    
     points.push(new Point({ x , y , curveWidth, color , pointColor}));
   }
   
@@ -69,7 +68,8 @@ const sketch = ({width, height}) => {
     context.strokeStyle = 'white';
 
     points.forEach(point => {
-      n = random.noise2D(point.ix + frame * 3,point.iy, frequency, amplitude);
+      n = random.noise2D(point.ix + frame * 2 ,point.iy + frame *2, frequency, amplitude);
+      //console.log(n);
       point.x = point.ix + n;
       point.y = point.iy + n;
     });
